@@ -1,6 +1,6 @@
 # CipherTool
 ```bash
-├── main.py - main file, in which we write all general functions for backend and connect backend with frontend
+├── main.py - echo "main file, in which we write all general functions for backend and connect backend with frontend"
 ├── README.md
 └── web
     ├── index.html - main page, in which we show contetn of program
