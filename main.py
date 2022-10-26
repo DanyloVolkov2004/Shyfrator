@@ -1,5 +1,5 @@
 import eel
-import crypto.ciphers as crypto
+import crypto.crypto as crypto
 
 # initialyze program
 eel.init("web")
