@@ -7,15 +7,28 @@
     <title>CipherTool</title>
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
     <style>
+<<<<<<< HEAD
         body {
             background: linear-gradient(#000000, #1f1f1f) fixed;
+=======
+        html{
+            min-width: 800px;
+            min-height: 700px;
+        }
+        body {
+            background: linear-gradient(#000000, #1f1f1f) fixed;
+
+>>>>>>> 95ed27e (upd)
         }
         
         div {
             width: 70%;
             margin: auto;
+<<<<<<< HEAD
             min-height: 2000px;
             background: #fff;
+=======
+>>>>>>> 95ed27e (upd)
         }
         
         .img1 {
@@ -29,10 +42,39 @@
 </head>
 
 <body>
+<<<<<<< HEAD
     <h1>CipherTool</h1>
     <form>
         <select id="metod" name="metod">
         <option value="0">Оберіть метод шифрування...</option>
+=======
+    <form style="text-align:center">
+        <div class="tool_bar">
+        <button>
+            <img src="img/back_btn.png" alt="">
+        </button>
+        </div>
+    </form>
+    <style>
+        .tool_bar{
+            width: 100%;
+            text-align: left;
+            max-height: 30px;
+        }
+        .tool_bar button{
+            background-color: transparent;
+            border: none;
+        }
+        .tool_bar img{
+            width: 30px;
+            height: 45px;
+        }
+    </style>
+    <h1>CipherTool</h1>
+    <form>
+        <select id="metod" name="metod">
+        <option value="0">Метод шифрування...</option>
+>>>>>>> 95ed27e (upd)
         <option value="1">DES-алгоритм</option>
         <option value="2">Код Грея</option>
         <option value="3">Асиметричне шифрування</option>
@@ -47,7 +89,11 @@
     </style>
 
     <form>
+<<<<<<< HEAD
         <textarea>Введіть ключ шифрування</textarea>
+=======
+        <textarea placeholder="Ключ"></textarea>
+>>>>>>> 95ed27e (upd)
     </form>
 
     <style>
@@ -69,11 +115,50 @@
     </p>
 
 
+<<<<<<< HEAD
     <form style="text-align:center">
         <button class="button1">Шифрувати</button>
     </form>
 
 
+=======
+    <div class="buttons_container">
+        <button class="button1" id="CiperButt">Шифрувати</button>
+        <button class="button1 disable" id="SaveButt">Зберегти файл</button>
+    </div>
+
+    <style>
+        .buttons_container{
+            width: 100%;
+            text-align: center;
+        }
+        .buttons_container .button1{
+            width: 50%;
+            max-width: 300px;
+            
+        }
+        .disable{
+            color: #babfbe;
+            background-color: rgba(255, 255, 255, .9);
+            border:none;
+        }
+    </style>
+
+    <script>
+
+        let CiperButt=document.getElementById("CiperButt");
+        let SaveButt=document.getElementById("SaveButt");
+
+        CiperButt.onclick=function(){
+            CiperButt.className="button1 disable";
+            SaveButt.className="button1 "
+        }
+        SaveButt.onclick=function(){
+            SaveButt.className="button1 disable";
+            CiperButt.className="button1 "
+        }
+    </script>
+>>>>>>> 95ed27e (upd)
 </body>
 
 </html>
