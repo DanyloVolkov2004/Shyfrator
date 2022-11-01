@@ -14,3 +14,5 @@ CipherTool
     └── js
         └── scripts.js      # file, in which we write frontend code and connect frontend with backend
 ```
+### Description:
+File encryption program
