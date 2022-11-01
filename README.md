@@ -2,7 +2,6 @@
 
 ## Table of contents
 * [Installation](#installation)
-* [Description](#description)
 * [Tree](#tree)
 
 ## Installation:
@@ -17,9 +16,6 @@ cd Shyfrator
 ```
 pip install -r requirements.txt
 ```
-
-## Description:
-File encryption program
 
 ## Tree:
 ```bash
