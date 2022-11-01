@@ -1,4 +1,33 @@
 # CipherTool
+
+### Installation:
+git clone https://github.com/DanyloVolkov2004/Shyfrator.git
+cd Shyfrator
+pip install -r requirements.txt
+
+## Table of contents
+* [General info](#general-info)
+* [Technologies](#technologies)
+* [Setup](#setup)
+
+## Setup
+To run this project, install it locally using npm:
+
+```
+$ cd ../lorem
+$ npm install
+$ npm start
+```
+
+## Installation
+
+```
+$ npm install --save @github/clipboard-copy-element
+```
+
+### Description:
+File encryption program
+
 ### Tree:
 ```bash
 CipherTool
@@ -14,5 +43,3 @@ CipherTool
     └── js
         └── scripts.js      # file, in which we write frontend code and connect frontend with backend
 ```
-### Description:
-File encryption program
