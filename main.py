@@ -13,6 +13,7 @@ def get_proba():
 def send_proba(msg):
     print(msg)
 
+@eel.expose
 def open_file_dialog():
     filename = fd.askopenfilename()
     print(filename)
