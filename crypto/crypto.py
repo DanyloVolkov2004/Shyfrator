@@ -11,7 +11,9 @@ class Crypto:
     
     A list of avaliable algorithms:
         "AES"
-
+        "Camellia"
+        "Blowfish"
+        
     """
 
     def __init__(self, algorithm:str, password:str):
@@ -90,6 +92,10 @@ class Crypto:
         iv = self.__generate_cbc_iv__(self.password, self.block_size)
         if self.name == "AES":
             return Cipher(algorithm=algorithms.AES256(self.key), mode=modes.CBC(iv))
+        if self.name == "Camellia":
+            return Cipher(algorithm=algorithms.Camellia(self.key), mode=modes.CBC(iv))
+        if self.name == "Blowfish":
+            return Cipher(algorithm=algorithms.Blowfish(self.key), mode=modes.CBC(iv))
         return None
 
     def __generate_cbc_iv__(self, password:str, iv_length:int):  
