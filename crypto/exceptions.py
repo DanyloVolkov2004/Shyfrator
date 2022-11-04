@@ -4,3 +4,7 @@ class ShortPasswordException(Exception):
     pass
 class IdenticalSourceException(Exception):
     pass
+class InvalidHeaderSignException(Exception):
+    pass
+class InvalidHeaderInfoException(Exception):
+    pass
