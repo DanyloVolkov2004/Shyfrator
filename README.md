@@ -20,16 +20,13 @@ pip install -r requirements.txt
 ## Tree:
 ```bash
 CipherTool
+├── .gitignore                         # git ignore file
 ├── crypto                             # chiper scripts...
 │   ├── ciphers.py
 │   ├── crypto.py
 │   ├── exceptions.py
-│   ├── __init__.py
-│   └── __pycache__
-│       ├── ciphers.cpython-310.pyc
-│       ├── crypto.cpython-310.pyc
-│       ├── exceptions.cpython-310.pyc
-│       └── __init__.cpython-310.pyc
+│   └── __init__.py
+│   
 ├── main.py                             # main file, in which we write all general functions for backend and connect backend with frontend
 ├── README.md
 ├── requirements.txt
