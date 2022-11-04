@@ -1,54 +1,130 @@
-body {
-    background: black;
+html{
+    min-width: 800px;
+    min-height: 700px;
 }
-
+body {
+    background: linear-gradient(#000000, #1f1f1f) fixed;
+    
+}
+#menu{
+    display: block;
+}
+#CiepherPage{
+    display: none;
+}
 h1 {
     color: white;
-    font-size: 727%;
+    font-size: 115px;
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
-    text-align: left;
-    margin-left: 60px;
+    text-align: center;
 }
 
-select {
-    width: 25%;
-    padding: 16px 20px;
-    border: 2px solid rgb(100, 100, 100);
-    border-radius: 4px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
-    background-color: #f1f1f1;
-    margin-left: 40px;
-}
-
-textarea {
-    width: 25%;
-    height: 50px;
-    padding: 12px 20px;
-    box-sizing: border-box;
-    border: 2px solid rgb(100, 100, 100);
-    border-radius: 4px;
-    background-color: #f1f1f1;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
-    resize: none;
-    margin-left: 40px;
-}
-
-h2 {
-    color: white;
-    font-size: 150%;
-    font-family: 'Montserrat', sans-serif;
-    text-align: left;
-    margin-left: 60px;
-}
-
-.button1 {
+.button {
     font-size: 35px;
     font-family: 'Montserrat', sans-serif;
-    padding: 12px 10px;
+    padding: 12px 28px;
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
+    font-weight: bold;
 }
+
+.adaptiveWindowSize {
+    min-height: 700px;
+    min-width: 800px;
+}
+
+
+div {
+    width: 100%;
+    margin: auto;
+}
+
+
+
+
+select {
+width: 25%;
+min-width: 250px;
+padding: 16px 20px;
+border: 2px solid rgb(100, 100, 100);
+border-radius: 4px;
+font-family: 'Montserrat', sans-serif;
+font-size: 16px;
+background-color: #f1f1f1;
+margin-left: 40px;
+}
+
+textarea {
+width: 25%;
+min-width: 250px;
+height: 50px;
+padding: 12px 20px;
+box-sizing: border-box;
+border: 2px solid rgb(100, 100, 100);
+border-radius: 4px;
+background-color: #f1f1f1;
+font-family: 'Montserrat', sans-serif;
+font-size: 16px;
+resize: none;
+margin-left: 40px;
+}
+
+h2 {
+color: white;
+font-size: 150%;
+font-family: 'Montserrat', sans-serif;
+text-align: left;
+margin-left: 40px;
+}
+
+.button1 {
+font-size: 35px;
+font-family: 'Montserrat', sans-serif;
+padding: 12px 10px;
+border-radius: 5px;
+cursor: pointer;
+text-align: center;
+}
+
+
+
+
+
+.img1 {
+    margin-left: 60px;
+}
+
+.w3-btn {
+    width: 150px;
+}
+.tool_bar{
+    width: 100%;
+    text-align: left;
+    max-height: 30px;
+}
+.tool_bar button{
+    background-color: transparent;
+    border: none;
+}
+.tool_bar img{
+    width: 30px;
+    height: 45px;
+}
+
+.buttons_container{
+    width: 100%;
+    text-align: center;
+}
+.buttons_container .button1{
+    width: 50%;
+    max-width: 300px;
+    
+}
+.disable{
+    color: #babfbe;
+    background-color: rgba(255, 255, 255, .9);
+    border:none;
+}
+

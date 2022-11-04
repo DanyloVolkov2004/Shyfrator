@@ -1,8 +1,8 @@
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes, padding
-import exceptions
-import ciphers
+from .ciphers import ciphers
+from .exceptions import *
 
 
 class Crypto:
@@ -11,15 +11,17 @@ class Crypto:
     
     A list of avaliable algorithms:
         "AES"
-
+        "Camellia"
+        "Blowfish"
+        
     """
 
     def __init__(self, algorithm:str, password:str):
         info = Crypto.__get_info__(self, algorithm)
         if info == None:
-            raise exceptions.InvalidCipherException("There is no such cipher avaliable") 
+            raise InvalidCipherException("There is no such cipher avaliable") 
         if len(password) < 8:
-            raise exceptions.ShortPasswordException("Password must be 8 characters or longer")
+            raise ShortPasswordException("Password must be 8 characters or longer")
 
         self.name = algorithm
         self.password = password
@@ -36,7 +38,7 @@ class Crypto:
         """method for encrypting a file, and writing the ciphertext into a separate file, using appropriate (selected) algorithm"""
 
         if destination_file_path == source_file_path:
-            raise exceptions.IdenticalSourceException("Source file path is the same as destination file path")
+            raise IdenticalSourceException("Source file path is the same as destination file path")
 
         source_file = open(source_file_path, "rb")
         destination_file = open(destination_file_path, "wb")
@@ -60,7 +62,7 @@ class Crypto:
         """method for decrypting a file, and writing the plaintext content into a separate file, using appropriate (selected) algorithm"""
 
         if destination_file_path == source_file_path:
-            raise exceptions.IdenticalSourceException("Source file path is the same as destination file path")
+            raise IdenticalSourceException("Source file path is the same as destination file path")
 
         source_file = open(source_file_path, "rb")
         destination_file = open(destination_file_path, "wb")
@@ -90,6 +92,10 @@ class Crypto:
         iv = self.__generate_cbc_iv__(self.password, self.block_size)
         if self.name == "AES":
             return Cipher(algorithm=algorithms.AES256(self.key), mode=modes.CBC(iv))
+        if self.name == "Camellia":
+            return Cipher(algorithm=algorithms.Camellia(self.key), mode=modes.CBC(iv))
+        if self.name == "Blowfish":
+            return Cipher(algorithm=algorithms.Blowfish(self.key), mode=modes.CBC(iv))
         return None
 
     def __generate_cbc_iv__(self, password:str, iv_length:int):  
@@ -114,4 +120,4 @@ class Crypto:
     def __get_info__(self, algorithm:str):
         """helper method for getting cipher configuration information"""
 
-        return ciphers.ciphers.get(algorithm, None)
+        return ciphers.get(algorithm, None)
