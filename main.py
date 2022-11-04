@@ -34,19 +34,15 @@ def save_file_to():
     global source_file_path_to_save
     source_file_path_to_save = fd.asksaveasfilename()
 
-    print(tmp_destination_file_path, source_file_path_to_save)
     # stop function if source file to save is not exists
     if not os.path.exists(str(source_file_path_to_save)):
         return 0
-    print(tmp_destination_file_path, source_file_path_to_save)
 
     # stop function if encoded file is not exists
     if not os.path.exists(tmp_destination_file_path):
         return 0
     shutil.copy(tmp_destination_file_path, source_file_path_to_save)
-    print(tmp_destination_file_path, source_file_path_to_save)
     
-
 @eel.expose
 def get_method(method_from_js:str):
     global method
