@@ -47,3 +47,8 @@ document.getElementById("key").addEventListener("change", (event) => {
 document.getElementById("CiperButt").addEventListener("click", () => {
     eel.encode();
 })
+
+// Save file
+document.getElementById("SaveButt").addEventListener("click", () => {
+    eel.save_file_to();
+})
