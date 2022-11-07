@@ -1,9 +1,9 @@
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes, padding
-import os 
-from ciphers import ciphers
-from exceptions import *
+import exceptions
+import ciphers
+import os
 
 
 class Crypto:
@@ -27,21 +27,21 @@ class Crypto:
         self.header_size = 77
 
         if len(password) < 8:
-            raise ShortPasswordException("Password must be 8 characters or longer")
+            raise exceptions.ShortPasswordException("Password must be 8 characters or longer")
         if algorithm is None:
             self.detect_cipher = True
             return None
 
         info = self.__get_info__(algorithm)
         if info == None:
-            raise InvalidCipherException("There is no such cipher avaliable")
+            raise exceptions.InvalidCipherException("There is no such cipher avaliable")
         self.__init_object_data__()
 
     def encrypt_file(self, source_file_path:str, destination_file_path:str):
         """method for encrypting a file, and writing the ciphertext into a separate file"""
         
         if destination_file_path == source_file_path:
-            raise IdenticalSourceException("Source file path is the same as destination file path")
+            raise exceptions.IdenticalSourceException("Source file path is the same as destination file path")
 
         source_file = open(source_file_path, "rb")
         destination_file = open(destination_file_path, "wb")
@@ -239,7 +239,7 @@ class Crypto:
         header_head = header[0:10]
 
         if header_sign != header_head:
-            raise InvalidHeaderSignException("This file was damaged, or not encrypted using instance of this class")
+            raise ciphers.InvalidHeaderSignException("This file was damaged, or not encrypted using instance of this class")
 
         encryption_data = {}
         cipher_type = header[10]
@@ -249,7 +249,7 @@ class Crypto:
             cipher = self.__get_cipher_from_header_byte__(cipher_byte)
             block_size = header[12]
             if block_size < 1 or block_size > 32:
-                raise InvalidHeaderInfoException("Invalid block size")
+                raise ciphers.InvalidHeaderInfoException("Invalid block size")
             iv = header[13:(13+block_size)]
 
             encryption_data["type"] = "block"
@@ -262,7 +262,7 @@ class Crypto:
             cipher = self.__get_cipher_from_header_byte__(cipher_byte)
             nonce_size = header[12]
             if nonce_size < 1 or nonce_size > 32:
-                raise InvalidHeaderInfoException("Invalid nonce size")
+                raise ciphers.InvalidHeaderInfoException("Invalid nonce size")
             nonce = header[13:(13+nonce_size)]
 
             encryption_data["type"] = "stream"
@@ -272,7 +272,7 @@ class Crypto:
 
 
         else:
-            raise InvalidHeaderInfoException("Invalid type byte")
+            raise ciphers.InvalidHeaderInfoException("Invalid type byte")
     
         return encryption_data
 
@@ -283,7 +283,7 @@ class Crypto:
     def __get_cipher_from_header_byte__(self, cipher_byte:bytes):
         """helper method for identifying cipher from header info"""
 
-        for (cipher, data) in ciphers.items():
+        for (cipher, data) in ciphers.ciphers.items():
             if int.from_bytes(data["header_byte"], "big") == int.from_bytes(cipher_byte, "big"):
                 return cipher
         return None
@@ -291,16 +291,4 @@ class Crypto:
     def __get_info__(self, algorithm:str):
         """helper method for getting cipher configuration information"""
 
-        return ciphers.get(algorithm, None)
-
-cr = Crypto("ChaCha20", "12345678")
-# cr = Crypto("Camellia", "12345678")
-# cr = Crypto("Camellia", "12345678")
-
-# cr.encrypt_file("crypto/test.txt", "crypto/encryptedtest.txt")
-cr.decrypt_file("crypto/encryptedtest.txt", "crypto/encryptedtestdecrypted.txt")
-
-
-
-# cr.encrypt_file("crypto/document.docx", "crypto/encryptedtest.docx")
-# cr.decrypt_file("crypto/encryptedtest.docx", "crypto/encryptedtestdecrypted.docx")
+        return ciphers.ciphers.get(algorithm, None)
