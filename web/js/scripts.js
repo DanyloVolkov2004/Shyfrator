@@ -1,18 +1,47 @@
 // FRONT-END \\
 
 let wrapper=document.getElementById("wrapper");
+
+
+
+//Buttons\\
 let CipherPageBtn=document.getElementById('CipherPageBtn');
+let DecipherPageBtn=document.getElementById('DecipherPageBtn');
 let CiperButt=document.getElementById("CiperButt");
 let SaveButt=document.getElementById("SaveButt");
+let DecipherButt=document.getElementById("DecipherButt");
+let DecipherSaveButt=document.getElementById("DecipherSaveButt");
 
+
+//Pages\\
 let MenuPage=document.getElementById("menu");
 let CiepherPage=document.getElementById("CiepherPage");
+let DecipherPage=document.getElementById("DeciepherPage");
+
+//Error Messages\\
+let ErrorMessages=document.getElementsByClassName("error_message");
 
 CipherPageBtn.onclick=OpenCiepherPage;
+DecipherPageBtn.onclick=OpenDeciepherPage;
+
+
 
 function OpenCiepherPage(){
     MenuPage.style.display="none"
     CiepherPage.style.display="block"
+}
+function OpenDeciepherPage(){
+    MenuPage.style.display="none"
+    DecipherPage.style.display="block"
+}
+
+
+//Function to make all error messages visible\\
+function MakeAllElementsVisible(elements){
+
+    for(let i=0;i<elements.length;i++){
+        elements[i].style.display="block";
+    }
 }
 
 CiperButt.onclick=function(){
@@ -24,6 +53,20 @@ SaveButt.onclick=function(){
     SaveButt.className="button1 disable";
     CiperButt.className="button1 "
 }
+
+DecipherButt.onclick=function(){
+    DecipherButt.className="button1 disable";
+    DecipherSaveButt.className="button1 "
+}
+
+DecipherSaveButt.onclick=function(){
+    DecipherSaveButt.className="button1 disable";
+    DecipherButt.className="button1 "
+}
+
+
+
+
 
 
 // BACK-END \\

@@ -12,6 +12,9 @@ body {
 #CiepherPage{
     display: none;
 }
+#DeciepherPage{
+    display: none;
+}
 h1 {
     color: white;
     font-size: 115px;
@@ -128,3 +131,12 @@ text-align: center;
     border:none;
 }
 
+.error_message{
+    
+    font-size: 30px;
+    color: #f7160a;
+    margin: auto;
+    width: 50%;
+    text-align: center;
+    display: none;
+}
