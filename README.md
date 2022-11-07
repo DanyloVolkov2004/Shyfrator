@@ -2,7 +2,7 @@
 
 ## Table of contents
 * [Installation](#installation)
-* [Launch the program](#tree)
+* [Launch the program](#launch-the-program)
 * [Tree](#tree)
 
 ## Installation:
