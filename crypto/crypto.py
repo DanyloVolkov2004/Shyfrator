@@ -1,4 +1,5 @@
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives.hmac import HMAC
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes, padding
 import os 
@@ -16,7 +17,6 @@ class Crypto:
         "Blowfish"
         "ChaCha20" 
 
-    After each use, either for encryption or decryption, it is crucial to generate a new instance of the class
     If None is passed as an algorithm, decryption cipher will be detected automatically for a given file but encryption will be disabled
     """
 
@@ -25,6 +25,7 @@ class Crypto:
         self.password = password
         self.chunk_size = 65536
         self.header_size = 77
+        self.hmac_size = 32
 
         if len(password) < 8:
             raise ShortPasswordException("Password must be 8 characters or longer")
@@ -47,16 +48,19 @@ class Crypto:
         destination_file = open(destination_file_path, "wb")
         cipher_obj = self.__init_cipher_obj__()
         encryptor = cipher_obj.encryptor()
+        hmac = HMAC(key=self.key, algorithm=hashes.SHA256())
 
         if self.type == "block":
             padder = self.padding_obj.padder()
-        read_buffer = source_file.read(self.chunk_size)
 
         header = self.__generate_header__()
         destination_file.write(header)
+        hmac.update(header)
+        read_buffer = source_file.read(self.chunk_size)
 
         while len(read_buffer) == self.chunk_size:
             write_buffer = encryptor.update(read_buffer)
+            hmac.update(write_buffer)
             destination_file.write(write_buffer)
             read_buffer = source_file.read(self.chunk_size)
 
@@ -67,7 +71,10 @@ class Crypto:
         else:
             write_buffer = encryptor.update(read_buffer) + encryptor.finalize()
             destination_file.write(write_buffer)
-
+    
+        hmac.update(write_buffer)
+        signature = hmac.finalize()
+        destination_file.write(signature)
         source_file.close()
         destination_file.close()
 
@@ -77,24 +84,21 @@ class Crypto:
         if destination_file_path == source_file_path:
             raise IdenticalSourceException("Source file path is the same as destination file path")
 
+        self.__authenticate_decryption__(source_file_path)
         source_file = open(source_file_path, "rb")
-        
         header = source_file.read(self.header_size)
         encryption_data = self.__parse_header__(header)
-        # print(encryption_data)
-        
+        source_file.seek(0, 2)
+        file_length = source_file.tell()
+        source_file.seek(self.header_size, 0)
+    
         if self.detect_cipher:
             self.__init_object_data__(encryption_data)
         else:
-            if self.type == "block":
-                self.iv = encryption_data.get("iv")
-            else:
-                self.nonce = encryption_data.get("nonce") 
+            self.iv = encryption_data.get("iv", None)
+            self.nonce = encryption_data.get("nonce", None) 
 
-
-        # self.__validate_encryption__() 
-
-        destination_file = open(destination_file_path, "wb")        
+        destination_file = open(destination_file_path, "wb")      
         cipher_obj = self.__init_cipher_obj__()
         decryptor = cipher_obj.decryptor()
 
@@ -102,23 +106,22 @@ class Crypto:
             unpadder = self.padding_obj.unpadder()
 
         first_read = True
-        read_buffer = source_file.read(self.block_size)
-        
-        while len(read_buffer) == self.block_size:
+        while file_length - source_file.tell() > self.chunk_size + self.hmac_size:
+            read_buffer = source_file.read(self.chunk_size)
             write_buffer = decryptor.update(read_buffer)
-            read_buffer = source_file.read(self.block_size)
-            if len(read_buffer) != self.block_size:
-                first_read = False
-                break
             destination_file.write(write_buffer)
-        
+            if len(read_buffer) != self.chunk_size:
+                first_read = False
+                break        
+
+        read_buffer = source_file.read()
         if self.type == "block":
             if first_read:
-                write_buffer = decryptor.update(read_buffer) + decryptor.finalize() 
+                write_buffer = decryptor.update(read_buffer[:-self.hmac_size]) + decryptor.finalize()
             unpadded_bytes = unpadder.update(write_buffer) + unpadder.finalize()
             destination_file.write(unpadded_bytes)
         else:
-            write_buffer = decryptor.update(read_buffer) + decryptor.finalize() 
+            write_buffer = decryptor.update(read_buffer[:-self.hmac_size]) + decryptor.finalize() 
             destination_file.write(write_buffer)
 
         source_file.close()
@@ -141,11 +144,10 @@ class Crypto:
             self.type = encryption_data.get("type")
             self.block_size = encryption_data.get("block_size", None)
             self.nonce_size = encryption_data.get("nonce_size", None)
+            self.iv = encryption_data.get("iv", None)
+            self.nonce = encryption_data.get("nonce", None)
             if self.type == "block":
-                self.iv = encryption_data.get("iv")
                 self.padding_obj = padding.PKCS7(self.block_size * 8)           
-            else:
-                self.nonce = encryption_data["nonce"]     
         else:
             info = self.__get_info__(self.name)
             self.type = info.get("type")
@@ -158,8 +160,7 @@ class Crypto:
                 self.nonce = self.__generate_nonce__(
                     nonce_path=os.path.join(os.path.dirname(os.path.realpath(__file__)), "nonces.txt"), 
                     nonce_length=self.nonce_size
-                )       
-
+                )
         info = self.__get_info__(self.name)
         self.detect_cipher = False
         self.key_length = info.get("key_length")
@@ -179,6 +180,9 @@ class Crypto:
 
         if nonce_length == None:
             return None
+        if not os.path.isfile(nonce_path):
+            nonce_file = open(nonce_path, "wb")
+            nonce_file.close()
         nonce_file = open(nonce_path, "rb")
         nonce = nonce_file.read()
         nonce_file.close()
@@ -209,7 +213,6 @@ class Crypto:
             iterations=100000,
         )
         return key_gen_alg.derive(bytes(password,"utf-8"))
-
 
     def __generate_header__(self):
         """helper method for generating encryption header"""
@@ -276,9 +279,28 @@ class Crypto:
     
         return encryption_data
 
-    def __validate_encryption__(self):
-        """helper method for validating encryption"""
-        pass
+    def __authenticate_decryption__(self, file_path:str):
+        """helper method for decryption autentication"""
+
+        file = open(file_path, "rb")
+        file.seek(-self.hmac_size, 2)
+        hmac_signature = file.read(self.hmac_size)
+        file_length = file.tell() + self.hmac_size
+        file.seek(0)
+        hmac = HMAC(key=self.key, algorithm=hashes.SHA256())
+
+        while file_length - file.tell() > self.chunk_size + self.hmac_size:
+            read_buffer = file.read(self.chunk_size)
+            hmac.update(read_buffer)
+
+        read_buffer = file.read()
+        hmac.update(read_buffer[:-self.hmac_size])
+        computed_hmac = hmac.finalize()
+        
+        if computed_hmac != hmac_signature:
+            file.close()
+            raise AuthenticationFailException("File signature did not match recomputed signature")
+        file.close()
 
     def __get_cipher_from_header_byte__(self, cipher_byte:bytes):
         """helper method for identifying cipher from header info"""
@@ -292,15 +314,3 @@ class Crypto:
         """helper method for getting cipher configuration information"""
 
         return ciphers.get(algorithm, None)
-
-cr = Crypto("ChaCha20", "12345678")
-# cr = Crypto("Camellia", "12345678")
-# cr = Crypto("Camellia", "12345678")
-
-# cr.encrypt_file("crypto/test.txt", "crypto/encryptedtest.txt")
-cr.decrypt_file("crypto/encryptedtest.txt", "crypto/encryptedtestdecrypted.txt")
-
-
-
-# cr.encrypt_file("crypto/document.docx", "crypto/encryptedtest.docx")
-# cr.decrypt_file("crypto/encryptedtest.docx", "crypto/encryptedtestdecrypted.docx")

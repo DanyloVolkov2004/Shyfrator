@@ -8,3 +8,5 @@ class InvalidHeaderSignException(Exception):
     pass
 class InvalidHeaderInfoException(Exception):
     pass
+class AuthenticationFailException(Exception):
+    pass
