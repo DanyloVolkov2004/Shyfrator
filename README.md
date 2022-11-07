@@ -2,6 +2,7 @@
 
 ## Table of contents
 * [Installation](#installation)
+* [Launch the program](#tree)
 * [Tree](#tree)
 
 ## Installation:
@@ -15,6 +16,11 @@ cd Shyfrator
 
 ```
 pip install -r requirements.txt
+```
+
+## Launch the program:
+```
+python main.py
 ```
 
 ## Tree:
