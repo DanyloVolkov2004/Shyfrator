@@ -3,8 +3,12 @@ import eel
 
 # main functions
 @eel.expose
-def get_file_path():
-    app.get_file_path()
+def get_encription_file_path():
+    app.get_encription_file_path()
+
+@eel.expose
+def get_decription_file_path():
+    app.get_decription_file_path()
 
 @eel.expose
 def save_file_to():
@@ -29,4 +33,5 @@ def decode():
 # start
 if __name__ == "__main__":
     app = connector.Program(eel)
-    app.run()
+    try: app.run()
+    except (SystemExit, MemoryError): app.clean()

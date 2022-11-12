@@ -71,9 +71,14 @@ DecipherSaveButt.onclick=function(){
 
 // BACK-END \\
 
-// Open file dialog
-document.getElementById("openFile").addEventListener("click", () => {
-    eel.get_file_path(); 
+// Open file dialog for encoding
+document.getElementById("openFileForEncoding").addEventListener("click", () => {
+    eel.get_encription_file_path(); 
+})
+
+// Open file dialog for decoding
+document.getElementById("openFileForDecoding").addEventListener("click", () => {
+    eel.get_decription_file_path(); 
 })
 
 // Select cipher
