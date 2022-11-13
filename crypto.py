@@ -84,20 +84,13 @@ class Crypto:
         if destination_file_path == source_file_path:
             raise exceptions.IdenticalSourceException("Source file path is the same as destination file path")
 
+        self.__init_object_data_from_file_header__(source_file_path)
         self.__authenticate_decryption__(source_file_path)
+
         source_file = open(source_file_path, "rb")
-        header = source_file.read(self.header_size)
-        encryption_data = self.__parse_header__(header)
         source_file.seek(0, 2)
         file_length = source_file.tell()
         source_file.seek(self.header_size, 0)
-    
-        if self.detect_cipher:
-            self.__init_object_data__(encryption_data)
-        else:
-            self.iv = encryption_data.get("iv", None)
-            self.nonce = encryption_data.get("nonce", None) 
-
         destination_file = open(destination_file_path, "wb")      
         cipher_obj = self.__init_cipher_obj__()
         decryptor = cipher_obj.decryptor()
@@ -166,6 +159,17 @@ class Crypto:
         self.key_length = info.get("key_length")
         self.header_byte = info.get("header_byte")
         self.key = self.__generate_key__(password=self.password, key_length=self.key_length)  
+        
+    def __init_object_data_from_file_header__(self, source_file_path:str):
+        source_file = open(source_file_path, "rb")
+        header = source_file.read(self.header_size)
+        encryption_data = self.__parse_header__(header)
+        
+        if self.detect_cipher:
+            self.__init_object_data__(encryption_data)
+        else:
+            self.iv = encryption_data.get("iv", None)
+            self.nonce = encryption_data.get("nonce", None) 
 
     def __generate_iv__(self, iv_length:int):  
         """helper method for generating an initialization vector"""
