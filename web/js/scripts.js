@@ -45,13 +45,19 @@ function MakeAllElementsVisible(elements){
 }
 
 CiperButt.onclick=function(){
-    CiperButt.className="button1 disable";
-    SaveButt.className="button1 "
+    CiperButt.className = "button1 disable";
+    CiperButt.disabled = true;
+
+    SaveButt.className = "button1 ";
+    SaveButt.disabled = false;
 }
 
 SaveButt.onclick=function(){
     SaveButt.className="button1 disable";
-    CiperButt.className="button1 "
+    SaveButt.disabled = true;
+
+    CiperButt.className="button1 ";
+    CiperButt.disabled = false;
 }
 
 DecipherButt.onclick=function(){
