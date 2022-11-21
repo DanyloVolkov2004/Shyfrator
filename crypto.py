@@ -24,19 +24,28 @@ class Crypto:
         self.name = algorithm
         self.password = password
         self.chunk_size = 65536
-        self.header_size = 77
+        self.header_size = 76
         self.hmac_size = 32
 
         if len(password) < 8:
             raise exceptions.ShortPasswordException("Password must be 8 characters or longer")
-        if algorithm is None:
-            self.detect_cipher = True
-            return None
 
         info = self.__get_info__(algorithm)
         if info == None:
             raise exceptions.InvalidCipherException("There is no such cipher avaliable")
-        self.__init_object_data__()
+        self.type = info.get("type")
+        self.block_size = info.get("block_size", None)
+        self.nonce_size = info.get("nonce_size", None)
+        if self.type == "block":
+            self.iv = self.__generate_iv__(self.block_size)
+            self.padding_obj = padding.PKCS7(self.block_size * 8)
+        else:
+            self.nonce = self.__generate_nonce__(
+                nonce_path=os.path.join(os.path.dirname(os.path.realpath(__file__)), "nonces.txt"), 
+                nonce_length=self.nonce_size
+            )
+        self.key_length = info.get("key_length")
+        self.key = self.__generate_key__(password=self.password, key_length=self.key_length) 
 
     def encrypt_file(self, source_file_path:str, destination_file_path:str):
         """method for encrypting a file, and writing the ciphertext into a separate file"""
@@ -84,7 +93,7 @@ class Crypto:
         if destination_file_path == source_file_path:
             raise exceptions.IdenticalSourceException("Source file path is the same as destination file path")
 
-        self.__init_object_data_from_file_header__(source_file_path)
+        self.__init_encryption_data_from_file_header__(source_file_path)
         self.__authenticate_decryption__(source_file_path)
 
         source_file = open(source_file_path, "rb")
@@ -92,7 +101,10 @@ class Crypto:
         file_length = source_file.tell()
         source_file.seek(self.header_size, 0)
         destination_file = open(destination_file_path, "wb")      
-        cipher_obj = self.__init_cipher_obj__()
+        try:
+            cipher_obj = self.__init_cipher_obj__()
+        except:
+            raise exceptions.DecryptionFailException("Invalid decryption parameters")
         decryptor = cipher_obj.decryptor()
 
         if self.type == "block":        
@@ -121,7 +133,9 @@ class Crypto:
         destination_file.close()
 
     def __init_cipher_obj__(self):
-        if self.name == "AES":
+        """helper method for initiating cipher object"""
+
+        if self.name == "AES":  
             return Cipher(algorithm=algorithms.AES256(self.key), mode=modes.CBC(self.iv))
         if self.name == "Camellia":
             return Cipher(algorithm=algorithms.Camellia(self.key), mode=modes.CBC(self.iv))
@@ -131,45 +145,15 @@ class Crypto:
             return Cipher(algorithm=algorithms.ChaCha20(self.key, self.nonce), mode=None)
         return None
         
-    def __init_object_data__(self, encryption_data:dict=None):
-        if encryption_data != None:
-            self.name = encryption_data.get("cipher")
-            self.type = encryption_data.get("type")
-            self.block_size = encryption_data.get("block_size", None)
-            self.nonce_size = encryption_data.get("nonce_size", None)
-            self.iv = encryption_data.get("iv", None)
-            self.nonce = encryption_data.get("nonce", None)
-            if self.type == "block":
-                self.padding_obj = padding.PKCS7(self.block_size * 8)           
-        else:
-            info = self.__get_info__(self.name)
-            self.type = info.get("type")
-            self.block_size = info.get("block_size", None)
-            self.nonce_size = info.get("nonce_size", None)
-            if self.type == "block":
-                self.iv = self.__generate_iv__(self.block_size)
-                self.padding_obj = padding.PKCS7(self.block_size * 8)
-            else:
-                self.nonce = self.__generate_nonce__(
-                    nonce_path=os.path.join(os.path.dirname(os.path.realpath(__file__)), "nonces.txt"), 
-                    nonce_length=self.nonce_size
-                )
-        info = self.__get_info__(self.name)
-        self.detect_cipher = False
-        self.key_length = info.get("key_length")
-        self.header_byte = info.get("header_byte")
-        self.key = self.__generate_key__(password=self.password, key_length=self.key_length)  
-        
-    def __init_object_data_from_file_header__(self, source_file_path:str):
+    def __init_encryption_data_from_file_header__(self, source_file_path:str):
+        """helper method for initiating decryption data from file header"""
+
         source_file = open(source_file_path, "rb")
         header = source_file.read(self.header_size)
         encryption_data = self.__parse_header__(header)
-        
-        if self.detect_cipher:
-            self.__init_object_data__(encryption_data)
-        else:
-            self.iv = encryption_data.get("iv", None)
-            self.nonce = encryption_data.get("nonce", None) 
+
+        self.iv = encryption_data.get("iv", None)
+        self.nonce = encryption_data.get("nonce", None) 
 
     def __generate_iv__(self, iv_length:int):  
         """helper method for generating an initialization vector"""
@@ -226,13 +210,11 @@ class Crypto:
 
         if self.type == "block":
             header.extend(b"\x00")
-            header.extend(self.header_byte)
             header.extend(self.block_size.to_bytes(1, "big"))
             header.extend(self.iv)
             header.extend(bytes(64-self.block_size))
         else:
             header.extend(b"\x01")
-            header.extend(self.header_byte)
             header.extend(self.nonce_size.to_bytes(1, "big"))
             header.extend(self.nonce)
             header.extend(bytes(64-self.nonce_size))
@@ -252,28 +234,22 @@ class Crypto:
         cipher_type = header[10]
 
         if cipher_type == int.from_bytes(b"\x00", "big"):
-            cipher_byte = header[11].to_bytes(1, "big")
-            cipher = self.__get_cipher_from_header_byte__(cipher_byte)
-            block_size = header[12]
+            block_size = header[11]
             if block_size < 1 or block_size > 32:
-                raise ciphers.InvalidHeaderInfoException("Invalid block size")
-            iv = header[13:(13+block_size)]
+                raise exceptions.InvalidHeaderInfoException("Invalid block size")
+            iv = header[12:(12+block_size)]
 
             encryption_data["type"] = "block"
-            encryption_data["cipher"] = cipher
             encryption_data["block_size"] = block_size
             encryption_data["iv"] = iv
 
         elif cipher_type == int.from_bytes(b"\x01", "big"):
-            cipher_byte = header[11].to_bytes(1, "big")
-            cipher = self.__get_cipher_from_header_byte__(cipher_byte)
-            nonce_size = header[12]
+            nonce_size = header[11]
             if nonce_size < 1 or nonce_size > 32:
                 raise exceptions.InvalidHeaderInfoException("Invalid nonce size")
                 
-            nonce = header[13:(13+nonce_size)]
+            nonce = header[12:(12+nonce_size)]
             encryption_data["type"] = "stream"
-            encryption_data["cipher"] = cipher
             encryption_data["nonce_size"] = nonce_size
             encryption_data["nonce"] = nonce
         else:
@@ -301,19 +277,20 @@ class Crypto:
         
         if computed_hmac != hmac_signature:
             file.close()
-            raise exceptions.AuthenticationFailException("File signature did not match recomputed signature")
+            raise exceptions.DecryptionFailException("File signature did not match recomputed signature")
         file.close()
-
-    def __get_cipher_from_header_byte__(self, cipher_byte:bytes):
-        """helper method for identifying cipher from header info"""
-
-        for (cipher, data) in ciphers.ciphers.items():
-            if int.from_bytes(data["header_byte"], "big") == int.from_bytes(cipher_byte, "big"):
-                return cipher
-        return None
 
     def __get_info__(self, algorithm:str):
         """helper method for getting cipher configuration information"""
 
         return ciphers.ciphers.get(algorithm, None)
     
+cr = Crypto("AES", "12345678")
+
+cr.encrypt_file("cat.g", "cat.enc")
+cr.decrypt_file("cat.enc", "cat.dec")
+
+# cr = Crypto("ChaCha20", "12345678")
+# 
+# cr.encrypt_file("cat.g", "cat.enc")
+# cr.decrypt_file("cat.enc", "cat.dec")
