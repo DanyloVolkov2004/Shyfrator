@@ -1,4 +1,5 @@
 from tkinter import filedialog as fd
+from tkinter import Tk
 import crypto
 import shutil
 import os
@@ -13,6 +14,9 @@ class Program:
         self.source_file_path_to_save = ()
         self.method = None
         self.password = None
+        self.fd_parent_window = Tk()
+        self.fd_parent_window.wm_attributes('-topmost', 1)
+        self.fd_parent_window.withdraw()
 
     def run(self):
         self.eel.init("web")
@@ -33,13 +37,13 @@ class Program:
         return self
 
     def get_encription_file_path(self):
-        self.encription_file_path = fd.askopenfilename()
+        self.encription_file_path = fd.askopenfilename(parent=self.fd_parent_window)
 
     def get_decription_file_path(self):
-        self.decription_file_path = fd.askopenfilename()
+        self.decription_file_path = fd.askopenfilename(parent=self.fd_parent_window)
 
     def save_file_to(self):
-        self.source_file_path_to_save = fd.asksaveasfilename()
+        self.source_file_path_to_save = fd.asksaveasfilename(parent=self.fd_parent_window)
 
         # stop function if source file to save is not exists
         if type(self.source_file_path_to_save) == type(()): return 0
