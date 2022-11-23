@@ -285,12 +285,3 @@ class Crypto:
 
         return ciphers.ciphers.get(algorithm, None)
     
-cr = Crypto("AES", "12345678")
-
-cr.encrypt_file("cat.g", "cat.enc")
-cr.decrypt_file("cat.enc", "cat.dec")
-
-# cr = Crypto("ChaCha20", "12345678")
-# 
-# cr.encrypt_file("cat.g", "cat.enc")
-# cr.decrypt_file("cat.enc", "cat.dec")
