@@ -62,12 +62,18 @@ SaveButt.onclick=function(){
 
 DecipherButt.onclick=function(){
     DecipherButt.className="button1 disable";
-    DecipherSaveButt.className="button1 "
+    DecipherButt.disabled = true;
+
+    DecipherSaveButt.className="button1 ";
+    DecipherSaveButt.disabled = false;
 }
 
 DecipherSaveButt.onclick=function(){
     DecipherSaveButt.className="button1 disable";
-    DecipherButt.className="button1 "
+    DecipherSaveButt.disabled = true;
+
+    DecipherButt.className="button1 ";
+    DecipherButt.disabled = false;
 }
 
 
@@ -102,7 +108,17 @@ document.getElementById("CiperButt").addEventListener("click", () => {
     eel.encode();
 })
 
+// Decode
+document.getElementById("DecipherButt").addEventListener("click", () => {
+    eel.decode();
+})
+
 // Save file
 document.getElementById("SaveButt").addEventListener("click", () => {
+    eel.save_file_to();
+})
+
+// Save file
+document.getElementById("DecipherSaveButt").addEventListener("click", () => {
     eel.save_file_to();
 })

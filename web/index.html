@@ -89,13 +89,21 @@
         
             </style>
             <h1>CipherTool</h1>
+            <form>
+                <select id="metod" name="metod">
+                    <option value="Null">Метод шифрування...</option>
+                    <option value="AES">AES</option>
+                    <option value="Camellia">Camellia</option>
+                    <option value="Blowfish">Blowfish</option>
+                    <option value="ChaCha20-">ChaCha20</option>
+                </select>
+            </form>
         
         
-            <h2>Введіть пароль</h2>
+        
             <form>
                 <textarea id="key" placeholder="Пароль"></textarea>
             </form>
-        
         
         
             <h2>Виберіть місце розташування файлу</h2>
@@ -116,7 +124,7 @@
             </div>
             <div class="buttons_container">
                 <button class="button1" id="DecipherButt">Дешифрувати</button>
-                <button class="button1 disable" id="DecipherSaveButt">Зберегти файл</button>
+                <button class="button1 disable" id="DecipherSaveButt" disabled>Зберегти файл</button>
             </div>
         </div>
     </div>

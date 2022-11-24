@@ -38,6 +38,7 @@ class Program:
 
     def get_encription_file_path(self):
         self.encription_file_path = fd.askopenfilename(parent=self.fd_parent_window)
+        print(self.encription_file_path)
 
     def get_decription_file_path(self):
         self.decription_file_path = fd.askopenfilename(parent=self.fd_parent_window)
@@ -77,6 +78,7 @@ class Program:
         # create tmp folder if not exists
         if not os.path.exists(self.tmp_path): self.tmp_path = os.mkdir(os.path.join(os.getcwd(), "tmp/"))
         self.tmp_destination_file_path = os.path.join(self.tmp_path, filename)
+        print(self.tmp_destination_file_path)
 
         # start encoding
         cr = crypto.Crypto(self.method, self.password)
