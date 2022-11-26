@@ -37,13 +37,8 @@ class Crypto:
         self.block_size = info.get("block_size", None)
         self.nonce_size = info.get("nonce_size", None)
         if self.type == "block":
-            self.iv = self.__generate_iv__(self.block_size)
             self.padding_obj = padding.PKCS7(self.block_size * 8)
-        else:
-            self.nonce = self.__generate_nonce__(
-                nonce_path=os.path.join(os.path.dirname(os.path.realpath(__file__)), "nonces.txt"), 
-                nonce_length=self.nonce_size
-            )
+
         self.key_length = info.get("key_length")
         self.key = self.__generate_key__(password=self.password, key_length=self.key_length) 
 
@@ -52,6 +47,8 @@ class Crypto:
         
         if destination_file_path == source_file_path:
             raise exceptions.IdenticalSourceException("Source file path is the same as destination file path")
+
+        self.__init_new_encryption_data__()
 
         source_file = open(source_file_path, "rb")
         destination_file = open(destination_file_path, "wb")
@@ -93,7 +90,7 @@ class Crypto:
         if destination_file_path == source_file_path:
             raise exceptions.IdenticalSourceException("Source file path is the same as destination file path")
 
-        self.__init_encryption_data_from_file_header__(source_file_path)
+        self.__init_decryption_data_from_file_header__(source_file_path)
         self.__authenticate_decryption__(source_file_path)
 
         source_file = open(source_file_path, "rb")
@@ -144,8 +141,19 @@ class Crypto:
         if self.name == "ChaCha20":
             return Cipher(algorithm=algorithms.ChaCha20(self.key, self.nonce), mode=None)
         return None
-        
-    def __init_encryption_data_from_file_header__(self, source_file_path:str):
+
+    def __init_new_encryption_data__(self):
+        """helper method for initiating encryption data for a new encryption session"""
+
+        if self.type == "block":
+            self.iv = self.__generate_iv__(self.block_size)
+        else:
+            self.nonce = self.__generate_nonce__(
+                nonce_path=os.path.join(os.path.dirname(os.path.realpath(__file__)), "nonces.txt"), 
+                nonce_length=self.nonce_size
+            )
+
+    def __init_decryption_data_from_file_header__(self, source_file_path:str):
         """helper method for initiating decryption data from file header"""
 
         source_file = open(source_file_path, "rb")
@@ -284,4 +292,3 @@ class Crypto:
         """helper method for getting cipher configuration information"""
 
         return ciphers.ciphers.get(algorithm, None)
-    
