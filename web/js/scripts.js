@@ -94,31 +94,51 @@ document.getElementById("openFileForDecoding").addEventListener("click", () => {
 })
 
 // Select cipher
-document.getElementById("metod").addEventListener("change", (event) => {
-    eel.get_method(event.target.value);
+document.querySelectorAll(".metod").forEach(item => {
+    item.addEventListener("change", (event) => {
+        eel.get_method(event.target.value); 
+    })
 })
 
 // Select password
-document.getElementById("key").addEventListener("change", (event) => {
-    eel.get_password(event.target.value); 
+document.querySelectorAll(".key").forEach(item => {
+    item.addEventListener("change", (event) => {
+        eel.get_password(event.target.value); 
+    })
 })
 
 // Encode
-document.getElementById("CiperButt").addEventListener("click", () => {
-    eel.encode();
+document.getElementById("CiperButt").addEventListener("click", async () => {
+    let response = await eel.encode()();
+    let json = JSON.parse(response);
+    if (json["success"] == false) {
+        alert(json["message"]);
+    }
 })
 
 // Decode
-document.getElementById("DecipherButt").addEventListener("click", () => {
-    eel.decode();
+document.getElementById("DecipherButt").addEventListener("click", async () => {
+    let response = await eel.decode()();
+    let json = JSON.parse(response);
+    if (json["success"] == false) {
+        alert(json["message"]);
+    }
 })
 
 // Save file
-document.getElementById("SaveButt").addEventListener("click", () => {
-    eel.save_file_to();
+document.getElementById("SaveButt").addEventListener("click", async () => {
+    let response = await eel.save_file_to()();
+    let json = JSON.parse(response);
+    if (json["success"] == false) {
+        alert(json["message"]);
+    }
 })
 
 // Save file
-document.getElementById("DecipherSaveButt").addEventListener("click", () => {
-    eel.save_file_to();
+document.getElementById("DecipherSaveButt").addEventListener("click", async () => {
+    let response = await eel.save_file_to()();
+    let json = JSON.parse(response);
+    if (json["success"] == false) {
+        alert(json["message"]);
+    }
 })

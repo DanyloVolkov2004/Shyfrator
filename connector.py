@@ -3,6 +3,7 @@ from tkinter import Tk
 import crypto
 import shutil
 import os
+import json
 
 class Program:
     def __init__(self, eel):
@@ -45,12 +46,20 @@ class Program:
 
     def save_file_to(self):
         self.source_file_path_to_save = fd.asksaveasfilename(parent=self.fd_parent_window)
-
+        print(self.source_file_path_to_save)
         # stop function if source file to save is not exists
-        if type(self.source_file_path_to_save) == type(()): return 0
+        if self.source_file_path_to_save == "": 
+            return json.dumps({
+                "success": False,
+                "message": "Destination wasn't chosen"
+            })
 
         # stop function if encoded file is not exists
-        if not os.path.exists(self.tmp_destination_file_path): return 0
+        if not os.path.exists(self.tmp_destination_file_path): 
+            return json.dumps({
+                "success": False,
+                "message": "Source file does not exist" 
+            })
 
         shutil.copy(self.tmp_destination_file_path, self.source_file_path_to_save)
         
@@ -66,13 +75,26 @@ class Program:
 
     def encode(self):
         # stop function if method is None
-        if self.method == None: return 0
+        if self.method == None: 
+            return json.dumps({
+                "success": False,
+                "message": "Method was not specified"
+            })
 
         # stop function if password is < than 8
-        if self.password == None: return 0
+        if self.password == None: 
+            return json.dumps({
+                "success": False,
+                "message": "Password must be longer than 8 characters"
+            })
 
         # stop function if source file is not exists
-        if not os.path.exists(str(self.encription_file_path)): return 0
+        if not os.path.exists(str(self.encription_file_path)): 
+            return json.dumps({
+                "success": False,
+                "message": "No file was chosen"
+            })
+
         filename = "encoded_" + os.path.basename(self.encription_file_path)
 
         # create tmp folder if not exists
@@ -86,19 +108,43 @@ class Program:
 
     def decode(self):
         # stop function if method is None
-        if self.method == None: return 0
+        if self.method == None: 
+            return json.dumps({
+                "success": False,
+                "message": "Method was not specified"
+            })
 
         # stop function if password is < than 8
-        if self.password == None: return 0
+        if self.password == None:
+            return json.dumps({
+                "success": False,
+                "message": "Password must be longer than 8 characters"
+            })
 
         # stop function if source file is not exists
-        if not os.path.exists(str(self.decription_file_path)): return 0
-        filename = "decoded_" + os.path.basename(self.encription_file_path)
+        if not os.path.exists(str(self.decription_file_path)): 
+            return json.dumps({
+                "success": False,
+                "message": "No file was chosen"
+            })
+        print(self.decription_file_path)
+        filename = "decoded_" + os.path.basename(self.decription_file_path)
 
         # create tmp folder if not exists
         if not os.path.exists(self.tmp_path): self.tmp_path = os.mkdir(os.path.join(os.getcwd(), "tmp/"))
         self.tmp_destination_file_path = os.path.join(self.tmp_path, filename)
 
         # start decoding
-        cr = crypto.Crypto(self.method, self.password)
-        cr.decrypt_file(self.decription_file_path, self.tmp_destination_file_path)
+        try:
+            cr = crypto.Crypto(self.method, self.password)
+            cr.decrypt_file(self.decription_file_path, self.tmp_destination_file_path)
+        except Exception as e:
+            return json.dumps({
+                "success": False,
+                "message": f"Decryption fail: {e}"
+            })
+
+        return json.dumps({
+            "success": True,
+            "message": "Decrypted successfully"
+        })

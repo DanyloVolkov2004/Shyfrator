@@ -244,7 +244,7 @@ class Crypto:
         if cipher_type == int.from_bytes(b"\x00", "big"):
             block_size = header[11]
             if block_size < 1 or block_size > 32:
-                raise exceptions.InvalidHeaderInfoException("Invalid block size")
+                raise exceptions.InvalidHeaderInfoException("This file was damaged, or not encrypted using instance of this class")
             iv = header[12:(12+block_size)]
 
             encryption_data["type"] = "block"
@@ -254,14 +254,14 @@ class Crypto:
         elif cipher_type == int.from_bytes(b"\x01", "big"):
             nonce_size = header[11]
             if nonce_size < 1 or nonce_size > 32:
-                raise exceptions.InvalidHeaderInfoException("Invalid nonce size")
+                raise exceptions.InvalidHeaderInfoException("This file was damaged, or not encrypted using instance of this class")
                 
             nonce = header[12:(12+nonce_size)]
             encryption_data["type"] = "stream"
             encryption_data["nonce_size"] = nonce_size
             encryption_data["nonce"] = nonce
         else:
-            raise exceptions.InvalidHeaderInfoException("Invalid type byte")
+            raise exceptions.InvalidHeaderInfoException("This file was damaged, or not encrypted using instance of this class")
     
         return encryption_data
 
@@ -285,7 +285,7 @@ class Crypto:
         
         if computed_hmac != hmac_signature:
             file.close()
-            raise exceptions.DecryptionFailException("File signature did not match recomputed signature")
+            raise exceptions.DecryptionFailException("Unauthorized Decription")
         file.close()
 
     def __get_info__(self, algorithm:str):
