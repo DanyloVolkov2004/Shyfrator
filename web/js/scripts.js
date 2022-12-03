@@ -45,35 +45,19 @@ function MakeAllElementsVisible(elements){
 }
 
 CiperButt.onclick=function(){
-    CiperButt.className = "button1 disable";
-    CiperButt.disabled = true;
 
-    SaveButt.className = "button1 ";
-    SaveButt.disabled = false;
 }
 
 SaveButt.onclick=function(){
-    SaveButt.className="button1 disable";
-    SaveButt.disabled = true;
 
-    CiperButt.className="button1 ";
-    CiperButt.disabled = false;
 }
 
 DecipherButt.onclick=function(){
-    DecipherButt.className="button1 disable";
-    DecipherButt.disabled = true;
-
-    DecipherSaveButt.className="button1 ";
-    DecipherSaveButt.disabled = false;
+    
 }
 
 DecipherSaveButt.onclick=function(){
-    DecipherSaveButt.className="button1 disable";
-    DecipherSaveButt.disabled = true;
 
-    DecipherButt.className="button1 ";
-    DecipherButt.disabled = false;
 }
 
 
@@ -114,6 +98,13 @@ document.getElementById("CiperButt").addEventListener("click", async () => {
     if (json["success"] == false) {
         alert(json["message"]);
     }
+    else {
+        CiperButt.disabled = true;
+        SaveButt.disabled = false;
+        CiperButt.className = "button1 disable";
+        SaveButt.className = "button1 ";
+    }
+
 })
 
 // Decode
@@ -123,6 +114,12 @@ document.getElementById("DecipherButt").addEventListener("click", async () => {
     if (json["success"] == false) {
         alert(json["message"]);
     }
+    else {
+        DecipherButt.disabled = true;
+        DecipherSaveButt.disabled = false;
+        DecipherButt.className="button1 disable";
+        DecipherSaveButt.className="button1 ";
+    }
 })
 
 // Save file
@@ -131,6 +128,12 @@ document.getElementById("SaveButt").addEventListener("click", async () => {
     let json = JSON.parse(response);
     if (json["success"] == false) {
         alert(json["message"]);
+    } 
+    else {
+        CiperButt.disabled = false;
+        SaveButt.disabled = true;
+        SaveButt.className="button1 disable";
+        CiperButt.className="button1 ";
     }
 })
 
@@ -140,5 +143,11 @@ document.getElementById("DecipherSaveButt").addEventListener("click", async () =
     let json = JSON.parse(response);
     if (json["success"] == false) {
         alert(json["message"]);
+    }
+    else {
+        DecipherButt.disabled = false;
+        DecipherSaveButt.disabled = true;
+        DecipherSaveButt.className="button1 disable";
+        DecipherButt.className="button1 ";
     }
 })

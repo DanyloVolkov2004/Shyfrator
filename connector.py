@@ -62,6 +62,10 @@ class Program:
             })
 
         shutil.copy(self.tmp_destination_file_path, self.source_file_path_to_save)
+        return json.dumps({
+            "success": True,
+            "message": "" 
+        })
         
     def get_method(self, method:str):
         # self.method = None if (method == "Null") else method
@@ -105,6 +109,11 @@ class Program:
         # start encoding
         cr = crypto.Crypto(self.method, self.password)
         cr.encrypt_file(self.encription_file_path, self.tmp_destination_file_path)
+
+        return json.dumps({
+            "success": True,
+            "message": "Encrypted successfully" 
+        })
 
     def decode(self):
         # stop function if method is None
