@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html class="adaptiveWindowSize" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
     <title>CipherTool</title>
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
@@ -14,15 +15,15 @@
             <h1>CipherTool</h1>
 
             <p style="text-align: center">
-                <button id="CipherPageBtn" class="button" style="width:425px;height:120px"><img src="img/pravo.png" alt="right" 
+                <button id="CipherPageBtn" class="button" ><img class="button_icon" src="img/pravo.png" alt="right" 
                 style="vertical-align: middle"> Шифрувати</button></p>
 
             <p style="text-align: center">
-                <button id="DecipherPageBtn" class="button" style="width:425px;height:120px"><img src="img/livo.png" alt="left" 
+                <button id="DecipherPageBtn" class="button" ><img class="button_icon" src="img/livo.png" alt="left" 
                 style="vertical-align: middle"> Дешифрувати</button></p>
 
             <p style="text-align: center">
-                <button class="button" style="width:425px;height:120px" onclick="alert('GIVE ME MONEY AND I GIVE YOU MY HARD CODE =)')"><img src="img/gear.png" alt="gear" 
+                <button class="button"><img class="button_icon" src="img/gear.png" alt="gear" 
                 style="vertical-align: middle"> Налаштувати</button></p>
         </div>
         <div id="CiepherPage">
@@ -36,35 +37,27 @@
             <style>
         
             </style>
-            <h1>CipherTool</h1>
             <form>
                 <select class="metod" name="metod">
                     <option value="Null">Метод шифрування...</option>
-                    <option value="AES">AES</option>
+                    <option value="AES" selected>AES</option>
                     <option value="Camellia">Camellia</option>
                     <option value="Blowfish">Blowfish</option>
                     <option value="ChaCha20">ChaCha20</option>
                 </select>
             </form>
-        
-        
-        
+              
             <form>
                 <textarea class="key" placeholder="Пароль"></textarea>
             </form>
         
-        
-        
             <h2>Виберіть місце розташування файлу</h2>
-        
-        
         
             <p class="img1">
                 <button  class="img1" id="openFileForEncoding">
                     <img src="img/folder.png" width="150" height="130" alt="folder">
                 </button>
             </p>
-        
         
             <div>
                 <p class="error_message">
@@ -85,37 +78,28 @@
                 </button>
                 </div>
             </form>
-            <style>
-        
-            </style>
-            <h1>CipherTool</h1>
-            <form>
+
+            <div style="margin-top: 10%;">
                 <select class="metod" name="metod">
                     <option value="Null">Метод шифрування...</option>
-                    <option value="AES">AES</option>
+                    <option value="AES" selected>AES</option>
                     <option value="Camellia">Camellia</option>
                     <option value="Blowfish">Blowfish</option>
                     <option value="ChaCha20">ChaCha20</option>
                 </select>
-            </form>
-        
-        
-        
-            <form>
+            </div>
+
+            <div>
                 <textarea class="key" placeholder="Пароль"></textarea>
-            </form>
-        
+            </div>
         
             <h2>Виберіть місце розташування файлу</h2>
-        
-        
         
             <p class="img1">
                 <button  class="img1" id="openFileForDecoding">
                     <img src="img/folder.png" width="150" height="130" alt="folder">
                 </button>
             </p>
-        
         
             <div>
                 <p class="error_message">
@@ -128,7 +112,6 @@
             </div>
         </div>
     </div>
-
     </body>
 
     <!-- Connect scripts -->

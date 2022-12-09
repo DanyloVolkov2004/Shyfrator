@@ -1,11 +1,10 @@
-html{
-    min-width: 800px;
-    min-height: 700px;
-}
 body {
     background: linear-gradient(#000000, #1f1f1f) fixed;
-    
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
 }
+
 #menu{
     display: block;
 }
@@ -17,25 +16,26 @@ body {
 }
 h1 {
     color: white;
-    font-size: 115px;
+    font-size: 90px;
+    margin: 40px;
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
     text-align: center;
 }
+.button_icon {
+    width: 40px;
+    height: 40px;
+}
 
 .button {
-    font-size: 35px;
+    font-size: 24px;
     font-family: 'Montserrat', sans-serif;
-    padding: 12px 28px;
+    width: 50%;
+    padding: 10px 24px;
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
     font-weight: bold;
-}
-
-.adaptiveWindowSize {
-    min-height: 700px;
-    min-width: 800px;
 }
 
 
@@ -48,47 +48,47 @@ div {
 
 
 select {
-width: 25%;
-min-width: 250px;
-padding: 16px 20px;
-border: 2px solid rgb(100, 100, 100);
-border-radius: 4px;
-font-family: 'Montserrat', sans-serif;
-font-size: 16px;
-background-color: #f1f1f1;
-margin-left: 40px;
+    width: 25%;
+    min-width: 250px;
+    padding: 16px 20px;
+    border: 2px solid rgb(100, 100, 100);
+    border-radius: 4px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    background-color: #f1f1f1;
+    margin-left: 40px;
 }
 
 textarea {
-width: 25%;
-min-width: 250px;
-height: 50px;
-padding: 12px 20px;
-box-sizing: border-box;
-border: 2px solid rgb(100, 100, 100);
-border-radius: 4px;
-background-color: #f1f1f1;
-font-family: 'Montserrat', sans-serif;
-font-size: 16px;
-resize: none;
-margin-left: 40px;
+    width: 25%;
+    min-width: 250px;
+    height: 50px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid rgb(100, 100, 100);
+    border-radius: 4px;
+    background-color: #f1f1f1;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    resize: none;
+    margin-left: 40px;
 }
 
 h2 {
-color: white;
-font-size: 150%;
-font-family: 'Montserrat', sans-serif;
-text-align: left;
-margin-left: 40px;
+    color: white;
+    font-size: 150%;
+    font-family: 'Montserrat', sans-serif;
+    text-align: left;
+    margin-left: 40px;
 }
 
 .button1 {
-font-size: 35px;
-font-family: 'Montserrat', sans-serif;
-padding: 12px 10px;
-border-radius: 5px;
-cursor: pointer;
-text-align: center;
+    font-size: 24px;
+    font-family: 'Montserrat', sans-serif;
+    padding: 12px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
 }
 
 
@@ -132,8 +132,7 @@ text-align: center;
     cursor: default;
 }
 
-.error_message{
-    
+.error_message{    
     font-size: 30px;
     color: #f7160a;
     margin: auto;
