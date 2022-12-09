@@ -1,16 +1,16 @@
 ciphers = {
     "AES": {
-        "key_length": 32,
+        "key_length": 16,
         "type": "block",
         "block_size": 16,
     },
     "Blowfish": {
-        "key_length": 24,
+        "key_length": 6,
         "type": "block",
-        "block_size": 8,
+        "block_size": 8
     },
     "Camellia": {
-        "key_length": 16,
+        "key_length": 32,
         "type": "block",
         "block_size": 16,
     },

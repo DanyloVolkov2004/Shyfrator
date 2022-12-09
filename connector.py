@@ -13,7 +13,7 @@ class Program:
         self.encription_file_path = ()
         self.decription_file_path = ()
         self.source_file_path_to_save = ()
-        self.method = None
+        self.method = "AES"
         self.password = None
         self.fd_parent_window = Tk()
         self.fd_parent_window.wm_attributes('-topmost', 1)
@@ -39,13 +39,14 @@ class Program:
 
     def get_encription_file_path(self):
         self.encription_file_path = fd.askopenfilename(parent=self.fd_parent_window)
-        print(self.encription_file_path)
+        self.default_file_name = "encrypted_" + os.path.basename(self.encription_file_path)
 
     def get_decription_file_path(self):
         self.decription_file_path = fd.askopenfilename(parent=self.fd_parent_window)
+        self.default_file_name = "decrypted_" + os.path.basename(self.decription_file_path)
 
     def save_file_to(self):
-        self.source_file_path_to_save = fd.asksaveasfilename(parent=self.fd_parent_window)
+        self.source_file_path_to_save = fd.asksaveasfilename(parent=self.fd_parent_window, initialfile=self.default_file_name)
         print(self.source_file_path_to_save)
         # stop function if source file to save is not exists
         if self.source_file_path_to_save == "": 

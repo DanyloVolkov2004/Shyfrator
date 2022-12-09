@@ -133,7 +133,7 @@ class Crypto:
         """helper method for initiating cipher object"""
 
         if self.name == "AES":  
-            return Cipher(algorithm=algorithms.AES256(self.key), mode=modes.CBC(self.iv))
+            return Cipher(algorithm=algorithms.AES(self.key), mode=modes.CBC(self.iv))
         if self.name == "Camellia":
             return Cipher(algorithm=algorithms.Camellia(self.key), mode=modes.CBC(self.iv))
         if self.name == "Blowfish":
